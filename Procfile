@@ -1,1 +1,1 @@
-web: pm2 start loader.js --name backend --watch
+web: node loader.js
