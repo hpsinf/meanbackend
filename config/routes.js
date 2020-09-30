@@ -32,5 +32,5 @@ module.exports = function(server) {
     protectApi.route('/billingsummary').get(billingSummaryService.getSummary)
 
     console.log('Rotas OK')
-    
+        
 }
