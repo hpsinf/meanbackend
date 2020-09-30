@@ -17,7 +17,7 @@ module.exports = function(server) {
     // Rotas protegidas
     const protectApi = express.Router()
     server.use('/api', protectApi)
-    protectApi.use(auth)
+    //protectApi.use(auth)
         
     server.get('/', (req, res)=>{
         res.send('Server OK')
