@@ -26,10 +26,10 @@ module.exports = function(server) {
     //rotas da API
     const billingCycleService = require('../api/billingCycle/billingCycleServices')
     //registra todos os metodos automaticamente
-    billingCycleService.register(router, '/billingcycles')
+    billingCycleService.register(protectApi, '/billingcycles')
 
     const billingSummaryService = require('../api/billingSummary/billingSummaryServices')
-    router.route('/billingsummary').get(billingSummaryService.getSummary)
+    protectApi.route('/billingsummary').get(billingSummaryService.getSummary)
 
     console.log('Rotas OK')
     
