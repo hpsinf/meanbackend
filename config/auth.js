@@ -4,7 +4,7 @@ const env = require('../.env')
 
 module.exports = (req, res, next) => {
     
-    //CORS
+    //CORS não verificar method Options, que é sempre requisitado antes e retorna os metodos acessiveis 
     if (req.method === 'OPTIONS') {
         next()
     } else {
