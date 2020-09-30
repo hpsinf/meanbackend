@@ -6,7 +6,7 @@ const env = require('../../.env')
 
 
 const emailRegex = /\S+@\S+\.\S+/
-const passwordRegex = /((?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%]).{6,12})/
+const passwordRegex = /((?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%<>]).{6,12})/
 
 const sendErrorsFromDB = (res, dbErrors) => {
     const errors = []
@@ -30,4 +30,54 @@ const login = (req, res) => {
             return res.status(400).send({errors: ['Usuário/Senha inválidos']})
         }
     })
+
+    const validateToken = (req, res, next) => {
+        const token = req.body.token || ''
+        jwt.verify(token, env.authSecret, (err, decoded) => {
+            return res.status(200).send({valid: !err})
+        })
+    }
+
+    const signup = (req, res, next) => {
+        const name = req.body.name || ''
+        const email = req.body.email || ''
+        const password = req.body.password || ''
+        const confirm_Password = req.body.confirm_password || ''
+
+        if (!email.match(emailRegex)) {
+            return res.status(400).send({errors: ["O email informado inválido."]})
+        }
+
+        if (!password.match(passwordRegex)) {
+            const msg = "Senha precisa ter: uma letra maiúscula, uma letra minúscula, um número, um caracter especial (@#$%<>) e tamanho de 6 a 12 caracter."
+            return res.status(400).send({errors: [msg]})
+        }
+        
+        const salt= bcrypt.genSaltSync()
+        const passwordHash = bcrypt.hashSync(password, salt)
+        if (!bcrypt.compareSync(confirm_Password, password)) {
+            return res.status(400).send({erreros: ["Senhas não conferem."]})
+        }
+
+        User.findOne({email}, (err, user) => {
+            if (err){
+                return sendErrorsFromDB(res,err)
+            } else if (user) {
+                return res.status(400).send({errors: ["Usuário já cadastrado"]})                
+            } else {
+                const newUser = new User({name, email, password: passwordHash})
+                newUser.save(err => {
+                    if (err) {
+                        return sendErrorsFromDB(res, err)
+                    } else {
+                        login(req, res)
+                    }
+                    
+                })
+            }
+        })
+
+    }
 }
+
+module.exports = { login, signup, validateToken }
