@@ -1,8 +1,9 @@
 
+const env = require('./env')
 const MongoDB = {
     nome: "MongoAtlas",
     user: "henrique",
-    password: "unTy6cuxvaXDTscE",
+    password: env.passwordBD,//"unTy6cuxvaXDTscE",
     dominio: "hpsinf-xwblh.gcp.mongodb.net",
     porta: "27017",
     dbname: "hpsinf",
