@@ -19,6 +19,9 @@ module.exports = function(server) {
     server.use('/api', protectApi)
     protectApi.use(auth)
         
+    server.get('/', (req, res)=>{
+        res.send('Server OK')
+    })
  
     //rotas da API
     const billingCycleService = require('../api/billingCycle/billingCycleServices')
